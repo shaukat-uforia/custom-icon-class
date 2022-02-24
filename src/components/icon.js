@@ -116,11 +116,19 @@ fabric.Icon = class extends fabric.Group {
         }, 500)
     }
     _updateRefBounding() {
+        let zoom=1;
+        if(this.canvas){
+            zoom=this.canvas.getZoom();
+        }
         if (!this.hasShapeContainer) {
             let rect = this.getBoundingRect();
+            rect.width/=zoom;
+            rect.height/=zoom;
             this.replaceRefBounding = rect;
         } else {
             let rect = this.icon.getBoundingRect(false, true);
+            rect.width/=zoom;
+            rect.height/=zoom;
             this.replaceRefBounding = rect
         }
 
@@ -259,7 +267,9 @@ fabric.Icon = class extends fabric.Group {
         let group = this;
         let icon = this.icon;
         let oldIconFill = icon.freelyDrawn ? icon.stroke : icon.fill;
-
+        if(group.scaleX!==1||group.scaleY!==1){
+            this._updateRefBounding()
+        }
         fabric.loadSVGFromURL(src, (objects, option) => {
             let newIcon = fabric.util.groupSVGElements(objects, option);
 
@@ -313,8 +323,8 @@ fabric.Icon = class extends fabric.Group {
             if (tempAngle) {
                 newIcon.angle = 0;
             }
-            newIcon.scaleX = scale*scaleX;
-            newIcon.scaleY = scale*scaleY;
+            newIcon.scaleX = scale;
+            newIcon.scaleY = scale;
             if (this.hasShapeContainer) {
                 group.height = group.shape.getScaledHeight();
                 group.width = group.shape.getScaledWidth();
@@ -331,9 +341,7 @@ fabric.Icon = class extends fabric.Group {
             group.iconMaxSize = this._getIconMaxScale();
             group.iconSize = newIcon.scaleX;
             group.canvas && group.canvas.renderAll()
-            if(scaleX!==1||scaleY!==1){
-                this._updateRefBounding()
-            }
+
         });
     }
 

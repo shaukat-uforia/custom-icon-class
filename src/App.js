@@ -40,8 +40,10 @@ function App() {
         let ctx=canvas.getContext();
         ctx.fillStyle ='rgba(250,250,250,0)';
         ctx.strokeStyle ='rgb(0, 0, 0)';
-        ctx.lineWidth=2
-        ctx.strokeRect(rectLeft-object.replaceRefBounding.width/2, rectTop-object.replaceRefBounding.height/2, object.replaceRefBounding.width, object.replaceRefBounding.height);
+        ctx.lineWidth=2;
+        rectLeft*=canvas.getZoom();
+        rectTop*=canvas.getZoom();
+        ctx.strokeRect(rectLeft-(object.replaceRefBounding.width*canvas.getZoom())/2, rectTop-(object.replaceRefBounding.height*canvas.getZoom())/2, object.replaceRefBounding.width*canvas.getZoom(), object.replaceRefBounding.height*canvas.getZoom());
         console.log('afterRender')
       }
     })
@@ -116,6 +118,22 @@ function App() {
       canvas.renderAll();
     })
   }
+  const handleZoomIn=()=>{
+    let zoom=canvas.getZoom();
+    zoom*=100;
+    zoom+=5;
+    zoom/=100;
+    canvas.zoomToPoint(new fabric.Point(0, 0),zoom)
+    canvas.renderAll();
+  }
+  const handleZoomOut=()=>{
+    let zoom=canvas.getZoom();
+    zoom*=100;
+    zoom-=5;
+    zoom/=100;
+    canvas.zoomToPoint(new fabric.Point(0, 0),zoom)
+    canvas.renderAll();
+  }
   return <div className={'row mx-3'}>
     <div className={'col-1'}>
 
@@ -124,6 +142,12 @@ function App() {
       <button onClick={()=>replaceShape('square.svg')}>change square shape</button>
       <button onClick={()=>replaceShape('hexagon.svg')}>change hexa shape</button>
       <button onClick={handleReload}>reload</button>
+      <div className="row">
+        <button onClick={handleZoomOut}>-</button>
+        <span>Zoom</span>
+        <button onClick={handleZoomIn}>+</button>
+      </div>
+
       <img src={activeObject&&activeObject.iconSrc} style={{width:100}} alt=""/>
     </div>
     <div className={'col'} style={{height: '600px'}}>
