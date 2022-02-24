@@ -424,6 +424,10 @@ fabric.Icon = class extends fabric.Group {
             this.dirty = true;
             this.shapeSize = newShape.scaleX;
             this.canvas && this.canvas.renderAll()
+            setTimeout(()=>{
+                this._updateRefBounding()
+            },500)
+
         });
     }
 
