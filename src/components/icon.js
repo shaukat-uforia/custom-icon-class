@@ -73,6 +73,7 @@ fabric.Icon = class extends fabric.Group {
         if (!shape) {
             this.width = icon.scaleX * icon.width;
             this.height = icon.scaleY * icon.height;
+
         } else {
             this.shapeBorderColor = shape.stroke;
             this.shapeBorderWidth = shape.strokeWidth;
@@ -82,7 +83,8 @@ fabric.Icon = class extends fabric.Group {
         }
         this.iconMaxSize = this._getIconMaxScale();
         this.shapeMinSize = this._getShapeMinSize(this.icon, this.shape);
-        this._updateRefBounding();
+
+        this._updateRefBounding()
 
         this.on('rotated', () => {
             this._updateRefBounding();
@@ -126,6 +128,7 @@ fabric.Icon = class extends fabric.Group {
 
     setIconSize(value) {
         if (value >= this.iconMinSize && value <= this.iconMaxSize) {
+            clearTimeout(this.updateBoundingTimer);
             this.iconSize = value;
             this.icon.scaleX = value;
             this.icon.scaleY = value;
@@ -136,7 +139,7 @@ fabric.Icon = class extends fabric.Group {
                 this.width = this.icon.width * value;
             }
             this.shapeMinSize = this._getShapeMinSize(this.icon, this.shape);
-            setTimeout(() => {
+            this.updateBoundingTimer= setTimeout(() => {
                 this._updateRefBounding();
             }, 1000)
         }
@@ -432,6 +435,26 @@ fabric.Icon = class extends fabric.Group {
     }
 
     toObject(propertiesToInclude = ['_id', 'title', 'hasShapeContainer', 'shapeSrc', 'iconSrc']) {
+        if(this.scaleY!=1||this.scaleX!=1){
+            let scaleX=this.scaleX;
+            let scaleY=this.scaleY;
+            this.scaleY=1;
+            this.scaleX=1;
+            this.icon.scaleX*=scaleX;
+            this.icon.scaleY*=scaleY;
+            if(this.hasShapeContainer){
+                this.shape.scaleX*=scaleX;
+                this.shape.scaleY*=scaleY;
+                this.height=this.shape.height*this.shape.scaleY;
+                this.width=this.shape.width*this.shape.scaleX;
+
+            }else {
+                this.height=this.icon.height*this.icon.scaleY;
+                this.width=this.icon.width*this.icon.scaleX;
+            }
+
+
+        }
         var _includeDefaultValues = this.includeDefaultValues;
         var objsToObject = this._objects
             .filter(function (obj) {
@@ -446,6 +469,7 @@ fabric.Icon = class extends fabric.Group {
             });
         var obj = fabric.Object.prototype.toObject.call(this, propertiesToInclude);
         obj.objects = objsToObject;
+        console.log(obj)
         return obj;
     }
 

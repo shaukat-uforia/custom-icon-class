@@ -110,7 +110,7 @@ function App() {
     activeObject.replaceShape(name);
   }
   const handleReload=()=>{
-    let json=canvas.toDatalessJSON();
+    let json=canvas.toJSON();
     canvas.clear();
     canvas.loadFromJSON(json,()=>{
       canvas.renderAll();
