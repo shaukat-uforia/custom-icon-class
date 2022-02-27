@@ -106,3 +106,34 @@ export function RGBAtoRGB  (r, g, b, a, r2, g2, b2)   {
     let b3 = Math.round(((1 - a) * b2) + (a * b));
     return "rgb(" + r3 + "," + g3 + "," + b3 + ")";
 }
+export function iconTypeValidate(object) {
+    let type = false;
+    if ((object.type == 'image' && object.name == 'iconNounApi')
+        || (object.type == 'group' && object.name == 'iconNounApi')
+        || (object.type == 'polygon')
+        || (object.type == 'circle' && object.name != 'controlA')
+        || (object.type == 'circle' && object.name != 'controlB')
+        || (object.type == 'circle' && object.name != 'oldControlA')
+        || (object.type == 'circle' && object.name != 'oldControlB')
+        || (object.type == 'polygon')
+        || (object.type == 'path' && object.name == 'iconNounApi')
+        || (object.type == 'group' && object.name == "Icons8")) {
+        type = true;
+    }
+    return type;
+}
+
+export function convertOldIconObject(oldIcon){
+    let newIconObject={
+        type:'icon',
+        objects:[object],
+        hasShapeContainer:false,
+        title:object.objectName,
+        _id:object.objectId,
+        scaleX:1,
+        scaleY:1,
+        width:object.scaleX*object.width,
+        height:object.scaleY*object.height,
+    }
+    return newIconObject;
+}
