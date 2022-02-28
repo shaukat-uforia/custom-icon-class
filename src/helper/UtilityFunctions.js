@@ -123,7 +123,7 @@ export function iconTypeValidate(object) {
     return type;
 }
 
-export function convertOldIconObject(oldIcon){
+export function convertOldIconObject(object){
     let newIconObject={
         type:'icon',
         objects:[object],
